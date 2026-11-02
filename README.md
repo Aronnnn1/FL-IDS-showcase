@@ -25,7 +25,7 @@ npm run dev      # local preview
 npm run build    # production build in dist/
 ```
 
-Pushing to `main` builds and deploys to GitHub Pages through `.github/workflows/deploy.yml`.
+Run `scripts/deploy.sh` to build the site and publish it to the `gh-pages` branch, which GitHub Pages serves.
 
 ## Stack
 
