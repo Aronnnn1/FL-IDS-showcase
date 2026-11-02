@@ -268,3 +268,4 @@ button, a, select, summary { touch-action: manipulation; }
   .slide-inner > *, .split > * , .panel > * { min-width: 0; }
   .nav-link { padding: 8px 10px; }
 }
+.nav .logo, .nav-link { white-space: nowrap; }
