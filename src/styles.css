@@ -269,3 +269,8 @@ button, a, select, summary { touch-action: manipulation; }
   .nav-link { padding: 8px 10px; }
 }
 .nav .logo, .nav-link { white-space: nowrap; }
+@media (max-width: 900px) {
+  .scn-tabs { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 4px; }
+  .scn-tabs .pill { flex: none; }
+  .map-svg { min-height: 0; flex: none; aspect-ratio: 1200 / 640; }
+}
