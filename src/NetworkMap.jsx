@@ -9,7 +9,7 @@ import { DROP_RULE, PHASE_B, STEALTH, SWEEP, ABLATION, ZERO_DAY, TAGS, fmt, int,
 const INK = '#0A0A0A';
 const CORAL = '#F03C4A';
 const STEP = 3.4;
-const SITES = Array.from({ length: 10 }, (_, i) => ({ i, x: 120, y: 125 + i * 44 }));
+const SITES = Array.from({ length: 10 }, (_, i) => ({ i, x: 120, y: 152 + i * 40 }));
 const CHEATER_ORDER = [2, 7, 5, 9];
 
 const PATHS = {
@@ -19,6 +19,7 @@ const PATHS = {
   up: 'M 400 370 C 420 440 470 470 545 468',
   down: 'M 545 506 C 460 522 380 450 366 370',
   lab: 'M 1050 425 L 982 425',
+  model: 'M 545 172 C 440 112 290 112 160 146',
 };
 
 const SCENARIOS = {
@@ -382,18 +383,20 @@ export default function NetworkMap({ active }) {
               <path id="mirror" d={PATHS.mirror} strokeDasharray="3 7" markerEnd="url(#arr)" />
               <path id="drop" d={PATHS.drop} markerEnd="url(#arr)" />
               <path id="lab" d={PATHS.lab} markerEnd="url(#arr)" />
+              <path id="model" d={PATHS.model} markerEnd="url(#arr)" />
             </g>
             <g fill="none" stroke="none">
               {SITES.map((s) => <path key={s.i} id={`cs${s.i}`} d={`M 545 170 C 460 96 280 100 ${s.x + 14} ${s.y}`} />)}
               {SITES.map((s) => <path key={s.i} id={`sa${s.i}`} d={`M 135 ${s.y} C 220 ${s.y} 270 320 330 320`} />)}
             </g>
+            <text x="352" y="104" className="svg-text sm" style={{ fill: '#5C5C58' }}>model</text>
             <text x="560" y="276" className="svg-text sm" style={{ fill: '#5C5C58' }} transform="rotate(-11 560 276)">alerts</text>
             <text x="600" y="368" className="svg-text sm" style={{ fill: '#5C5C58' }}>features</text>
             <text x="1004" y="414" className="svg-text sm" style={{ fill: '#5C5C58' }}>replay</text>
 
             {/* nodes */}
-            <Node id="sites" label={NODE_LABEL.sites} onOpen={openScene} haloBox={[96, 104, 48, 440]}>
-              <rect className="shape" x="96" y="104" width="48" height="440" rx="24" fill={INK} />
+            <Node id="sites" label={NODE_LABEL.sites} onOpen={openScene} haloBox={[96, 124, 48, 416]}>
+              <rect className="shape" x="96" y="124" width="48" height="416" rx="24" fill={INK} />
               {SITES.map((s) => (
                 <g key={s.i}>
                   <circle id={`site${s.i}`} cx={s.x} cy={s.y} r="15" fill="#F5F5F4" stroke={INK} strokeWidth="2.5" />
@@ -414,7 +417,7 @@ export default function NetworkMap({ active }) {
               <rect className="shape" x="545" y="120" width="170" height="120" rx="20" fill={INK} />
               <g stroke="#F5F5F4" strokeWidth="2" fill="#F5F5F4">
                 {[0, 1, 2].map((k) => (
-                  <g key={k} transform={`translate(${578 + k * 52} 142)`}>
+                  <g key={k} transform={`translate(${564 + k * 52} 142)`}>
                     <path d="M 14 8 L 4 28 M 14 8 L 24 28 M 4 28 L 0 44 M 4 28 L 10 44" fill="none" />
                     <circle cx="14" cy="8" r="5" /><circle cx="4" cy="28" r="4" /><circle cx="24" cy="28" r="4" fill={CORAL} stroke={CORAL} />
                   </g>

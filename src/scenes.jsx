@@ -150,7 +150,7 @@ function SitesArt({ register }) {
     <svg ref={ref} viewBox="0 0 800 460" role="img" aria-label="Six sites with different traffic mixes, each splitting its own data into train, validation and test">
       {MIX.map((m, i) => {
         const x = 30 + (i % 3) * 252;
-        const y = 24 + Math.floor(i / 3) * 190;
+        const y = 16 + Math.floor(i / 3) * 184;
         let off = 0;
         let off2 = 0;
         return (
@@ -161,17 +161,17 @@ function SitesArt({ register }) {
             {m.map((v, k) => { const w = v * 202; const r = <rect key={k} className={`mix${i}`} data-w={w} x={14 + off} y="42" width={w} height="20" fill={MIX_COL[k]} />; off += w; return r; })}
             <T x="14" y="82" cls="sm">traffic mix of this site</T>
             {SPLIT.map((v, k) => { const w = v * 202; const r = <rect key={k} className={`spl${i}`} data-w={w} x={14 + off2} y="98" width={w} height="14" fill={SPLIT_COL[k]} />; off2 += w; return r; })}
-            <T x="14" y="132" cls="sm">train · normal validation · test</T>
+            <T x="14" y="132" cls="sm">train · validation · test</T>
             <g id={`z${i}`} opacity="0"><T x="14" y="152" cls="sm" fill={CORAL}>own scaler, clipped at ±10</T></g>
           </g>
         );
       })}
       <g id="lock" opacity="0">
-        <rect x="30" y="400" width="740" height="44" rx="22" fill={INK} />
-        <T x="400" y="428" anchor="middle" cls="lg" fill={PAPER}>Raw traffic never leaves a site. Only model updates go to the server.</T>
+        <rect x="30" y="404" width="740" height="44" rx="22" fill={INK} />
+        <T x="400" y="432" anchor="middle" cls="lg" fill={PAPER}>Raw traffic never leaves a site. Only model updates go to the server.</T>
       </g>
       <g id="layer" style={{ pointerEvents: 'none' }} />
-      <T x="772" y="392" anchor="end" cls="sm" fill="#5C5C58">black normal · red flooding · dark red web attacks · grey scans (illustrative mixes)</T>
+      <T x="772" y="389" anchor="end" cls="sm" fill="#5C5C58">black normal · red flooding · dark red web attacks · grey scans (illustrative mixes)</T>
     </svg>
   );
 }
@@ -207,18 +207,30 @@ function AutoencoderArt({ register }) {
 
   return (
     <svg ref={ref} viewBox="0 0 800 460" role="img" aria-label="An autoencoder rebuilding a normal packet well and an unusual one badly">
-      <T x="40" y="40" cls="lg">Packet features</T>
-      <T x="445" y="40" cls="lg">Rebuilt features</T>
-      <T x="650" y="40" cls="lg">Rebuild error</T>
-      {N_IN.map((h, i) => <rect key={i} className="bin" x={40 + i * 24} y={BASE - h} width="16" height={h} rx="2" fill={INK} />)}
-      <path d="M 232 150 L 300 205 L 300 275 L 232 330 Z" fill={INK} />
+      <defs>
+        <marker id="sarr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="14" markerHeight="14" markerUnits="userSpaceOnUse" orient="auto"><path d="M0 1L9 5L0 9z" fill="#0A0A0A" /></marker>
+        <marker id="sarrc" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="14" markerHeight="14" markerUnits="userSpaceOnUse" orient="auto"><path d="M0 1L9 5L0 9z" fill="#F03C4A" /></marker>
+      </defs>
+      <T x="36" y="40" cls="lg">Packet features</T>
+      <T x="470" y="40" cls="lg">Rebuilt features</T>
+      <T x="713" y="40" anchor="middle" cls="lg">Rebuild error</T>
+      {N_IN.map((h, i) => <rect key={i} className="bin" x={36 + i * 22} y={BASE - h} width="14" height={h} rx="2" fill={INK} />)}
+      <path d="M 232 140 L 300 200 L 300 280 L 232 340 Z" fill={INK} />
       <T x="266" y="244" anchor="middle" cls="sm" fill={PAPER}>encoder</T>
-      {[210, 245, 280].map((y) => <circle key={y} cx="338" cy={y} r="11" fill={CORAL} stroke={INK} strokeWidth="2.5" />)}
-      <T x="338" y="316" anchor="middle" cls="sm">bottleneck</T>
-      <path d="M 376 205 L 444 150 L 444 330 L 376 275 Z" fill={INK} transform="translate(-6 0)" />
+      {[210, 245, 280].map((y) => <circle key={y} cx="335" cy={y} r="11" fill={CORAL} stroke={INK} strokeWidth="2.5" />)}
+      <T x="335" y="316" anchor="middle" cls="sm">bottleneck</T>
+      <path d="M 370 200 L 438 140 L 438 340 L 370 280 Z" fill={INK} />
       <T x="404" y="244" anchor="middle" cls="sm" fill={PAPER}>decoder</T>
-      {N_OUT.map((h, i) => <rect key={i} className="bout" x={455 + i * 24} y={BASE - h} width="16" height={h} rx="2" fill={INK} />)}
-      <line x1="30" x2="660" y1={BASE} y2={BASE} stroke={INK} strokeWidth="2.5" />
+      {N_OUT.map((h, i) => <rect key={i} className="bout" x={470 + i * 22} y={BASE - h} width="14" height={h} rx="2" fill={INK} />)}
+      <g stroke={INK} strokeWidth="3" fill="none" strokeLinecap="round">
+        <line x1="208" x2="228" y1="240" y2="240" markerEnd="url(#sarr)" />
+        <line x1="303" x2="318" y1="240" y2="240" markerEnd="url(#sarr)" />
+        <line x1="352" x2="366" y1="240" y2="240" markerEnd="url(#sarr)" />
+        <line x1="441" x2="466" y1="240" y2="240" markerEnd="url(#sarr)" />
+        <line x1="640" x2="684" y1="240" y2="240" markerEnd="url(#sarr)" strokeDasharray="1 7" />
+      </g>
+      <T x="662" y="262" anchor="middle" cls="sm" fill="#5C5C58">compare</T>
+      <line x1="30" x2="650" y1={BASE} y2={BASE} stroke={INK} strokeWidth="2.5" />
       <rect x="690" y="130" width="46" height="210" rx="8" fill="none" stroke={INK} strokeWidth="2.5" />
       <rect id="err" x="692" y="340" width="42" height="0" fill={INK} />
       <line x1="682" x2="746" y1="230" y2="230" stroke={CORAL} strokeWidth="3" strokeDasharray="6 5" />
@@ -241,11 +253,11 @@ function ClassifierArt({ register }) {
   const ref = useRef(null);
   useArt(ref, (tl, svg) => {
     const bars = svg.querySelectorAll('.vote');
-    const setBars = (vals, at, col) => bars.forEach((b, i) => tl.to(b, { attr: { height: vals[i] * 150, y: 400 - vals[i] * 150, fill: i === vals.indexOf(Math.max(...vals)) ? col : INK }, duration: 0.7, ease: 'power2.out' }, at));
+    const setBars = (vals, at, col) => bars.forEach((b, i) => tl.to(b, { attr: { height: vals[i] * 130, y: 420 - vals[i] * 130, fill: i === vals.indexOf(Math.max(...vals)) ? col : INK }, duration: 0.7, ease: 'power2.out' }, at));
     const lights = (at) => svg.querySelectorAll('.leaf').forEach((l, i) => {
       tl.fromTo(l, { opacity: 0.15 }, { opacity: 1, duration: 0.3 }, at + i * 0.18);
     });
-    tl.set(bars, { attr: { height: 0, y: 400 } }, 0);
+    tl.set(bars, { attr: { height: 0, y: 420 } }, 0);
     tl.set('.leaf', { opacity: 0.15 }, 0);
     tl.fromTo('#pk', { x: 0, opacity: 0 }, { x: 70, opacity: 1, duration: 0.5 }, 0.2);
     lights(0.7);
@@ -253,7 +265,7 @@ function ClassifierArt({ register }) {
     tl.fromTo('#conf', { opacity: 0 }, { opacity: 1, duration: 0.3 }, 2.6);
     tl.to('#conf', { opacity: 0, duration: 0.25 }, 4.6);
     tl.to('.leaf', { opacity: 0.15, duration: 0.3 }, 4.7);
-    tl.set(bars, { attr: { height: 0, y: 400 } }, 5.0);
+    tl.set(bars, { attr: { height: 0, y: 420 } }, 5.0);
     lights(5.2);
     setBars(UNSURE, 6.3, INK);
     tl.fromTo('#unsure', { opacity: 0 }, { opacity: 1, duration: 0.3 }, 7.1);
@@ -263,26 +275,32 @@ function ClassifierArt({ register }) {
 
   return (
     <svg ref={ref} viewBox="0 0 800 460" role="img" aria-label="Boosted trees voting on a packet, once confident and once unsure">
+      <defs>
+        <marker id="sarr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="14" markerHeight="14" markerUnits="userSpaceOnUse" orient="auto"><path d="M0 1L9 5L0 9z" fill="#0A0A0A" /></marker>
+        <marker id="sarrc" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="14" markerHeight="14" markerUnits="userSpaceOnUse" orient="auto"><path d="M0 1L9 5L0 9z" fill="#F03C4A" /></marker>
+      </defs>
       <T x="40" y="38" cls="lg">Boosted trees vote</T>
       <g id="pk"><rect x="24" y="84" width="38" height="26" rx="8" fill={CORAL} stroke={INK} strokeWidth="2.5" /><T x="43" y="102" anchor="middle" cls="sm" fill={INK}>pkt</T></g>
       {[0, 1, 2, 3, 4, 5].map((k) => (
-        <g key={k} transform={`translate(${140 + k * 100} 70)`}>
+        <g key={k} transform={`translate(${140 + k * 100} 56)`}>
           <path d="M 40 10 L 15 55 M 40 10 L 65 55 M 15 55 L 5 100 M 15 55 L 28 100 M 65 55 L 52 100 M 65 55 L 78 100" fill="none" stroke={INK} strokeWidth="2.5" />
           <circle cx="40" cy="10" r="9" fill={INK} /><circle cx="15" cy="55" r="8" fill={INK} /><circle cx="65" cy="55" r="8" fill={INK} />
           <circle className="leaf" cx={k % 2 ? 28 : 78} cy="100" r="9" fill={CORAL} stroke={INK} strokeWidth="2" />
           <circle cx={k % 2 ? 5 : 52} cy="100" r="7" fill="#fff" stroke={INK} strokeWidth="2" />
         </g>
       ))}
-      <line x1="40" x2="780" y1="400" y2="400" stroke={INK} strokeWidth="2.5" />
+      <line x1="420" x2="420" y1="176" y2="204" stroke={INK} strokeWidth="3" markerEnd="url(#sarr)" strokeLinecap="round" />
+      <T x="436" y="196" cls="sm" fill="#5C5C58">votes are added up</T>
+      <line x1="40" x2="780" y1="420" y2="420" stroke={INK} strokeWidth="2.5" />
       {CLASSES.map((c, i) => (
         <g key={c}>
-          <rect className="vote" x={110 + i * 130} y="400" width="70" height="0" rx="3" fill={INK} />
-          <T x={145 + i * 130} y="424" anchor="middle" cls="sm">{c}</T>
+          <rect className="vote" x={110 + i * 130} y="420" width="70" height="0" rx="3" fill={INK} />
+          <T x={145 + i * 130} y="442" anchor="middle" cls="sm">{c}</T>
         </g>
       ))}
-      <T x="40" y="222" cls="sm" fill="#5C5C58">combined vote for each class</T>
-      <g id="conf" opacity="0"><rect x="220" y="238" width="420" height="40" rx="20" fill={CORAL} /><T x="430" y="264" anchor="middle" cls="lg" fill={INK}>Confident: named DDoS_UDP and blocked</T></g>
-      <g id="unsure" opacity="0"><rect x="160" y="238" width="520" height="40" rx="20" fill={INK} /><T x="420" y="264" anchor="middle" cls="lg" fill={PAPER}>Not confident: passed to the autoencoder</T></g>
+      <T x="40" y="284" cls="sm" fill="#5C5C58">share of the vote per class</T>
+      <g id="conf" opacity="0"><rect x="220" y="212" width="420" height="40" rx="20" fill={CORAL} /><T x="430" y="238" anchor="middle" cls="lg" fill={INK}>Confident: named DDoS_UDP and blocked</T></g>
+      <g id="unsure" opacity="0"><rect x="160" y="212" width="520" height="40" rx="20" fill={INK} /><T x="420" y="238" anchor="middle" cls="lg" fill={PAPER}>Not confident: passed to the autoencoder</T></g>
     </svg>
   );
 }
@@ -303,8 +321,6 @@ function TrustArt({ register }) {
     svg.querySelectorAll('.arrow').forEach((l, i) => {
       const tx = Number(l.dataset.tx); const ty = Number(l.dataset.ty);
       tl.fromTo(l, { attr: { x2: 0, y2: 0 } }, { attr: { x2: tx, y2: ty }, duration: 0.7, ease: 'power2.out' }, 0.2 + i * 0.12);
-      const tip = svg.querySelector(`#tip${i}`);
-      tl.fromTo(tip, { attr: { cx: 0, cy: 0 } }, { attr: { cx: tx, cy: ty }, duration: 0.7, ease: 'power2.out' }, 0.2 + i * 0.12);
     });
     svg.querySelectorAll('.cosbar').forEach((b, i) => {
       tl.fromTo(b, { attr: { width: 0 } }, { attr: { width: Number(b.dataset.w) }, duration: 0.6, ease: 'power2.out' }, 2.0 + i * 0.08);
@@ -318,6 +334,11 @@ function TrustArt({ register }) {
 
   return (
     <svg ref={ref} viewBox="0 0 800 460" role="img" aria-label="Client updates as arrows, the median update, and cheating updates being down-weighted">
+      <defs>
+        <marker id="sarr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="14" markerHeight="14" markerUnits="userSpaceOnUse" orient="auto"><path d="M0 1L9 5L0 9z" fill="#0A0A0A" /></marker>
+        <marker id="sarrc" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="14" markerHeight="14" markerUnits="userSpaceOnUse" orient="auto"><path d="M0 1L9 5L0 9z" fill="#F03C4A" /></marker>
+      </defs>
+
       <g transform="translate(60 40)">
         <foreignObject x="0" y="-8" width="300" height="40">
           <div xmlns="http://www.w3.org/1999/xhtml" style={{ display: 'flex', gap: 8 }}>
@@ -333,13 +354,12 @@ function TrustArt({ register }) {
           const [tx, ty] = polar(r.a, r.len);
           return (
             <g key={i} className={r.bad ? 'bad' : ''}>
-              <line className="arrow" data-tx={tx} data-ty={ty} x1="0" y1="0" x2="0" y2="0" stroke={r.bad ? CORAL : INK} strokeWidth="3.2" strokeLinecap="round" />
-              <circle id={`tip${i}`} cx="0" cy="0" r="6" fill={r.bad ? CORAL : INK} />
+              <line className="arrow" data-tx={tx} data-ty={ty} x1="0" y1="0" x2="0" y2="0" stroke={r.bad ? CORAL : INK} strokeWidth="3.2" strokeLinecap="round" markerEnd={r.bad ? 'url(#sarrc)' : 'url(#sarr)'} />
             </g>
           );
         })}
-        <g id="medarrow" opacity="0"><line x1="0" y1="0" x2="118" y2="0" stroke={INK} strokeWidth="6" strokeLinecap="round" strokeDasharray="1 11" /><T x="126" y="5" cls="sm">median update</T></g>
-        <g id="final" opacity="0"><line x1="0" y1="0" x2="108" y2="-6" stroke={CORAL} strokeWidth="7" strokeLinecap="round" /><T x="-40" y="-100" cls="lg" fill={CORAL}>trimmed mean</T></g>
+        <g id="medarrow" opacity="0"><line x1="0" y1="0" x2="118" y2="0" stroke={INK} strokeWidth="5" strokeLinecap="round" strokeDasharray="1 10" markerEnd="url(#sarr)" /><T x="134" y="5" cls="sm">median update</T></g>
+        <g id="final" opacity="0"><line x1="0" y1="0" x2="108" y2="-6" stroke={CORAL} strokeWidth="6" strokeLinecap="round" markerEnd="url(#sarrc)" /><T x="-40" y="-100" cls="lg" fill={CORAL}>trimmed mean</T></g>
         <circle r="6" fill={INK} />
       </g>
       <T x="470" y="40" cls="lg">Similarity to the median update</T>
@@ -356,6 +376,7 @@ function TrustArt({ register }) {
       })}
       <line x1="690" x2="690" y1="60" y2={66 + rows.length * 32} stroke={GREY} strokeDasharray="3 5" />
       <T x="590" y={66 + rows.length * 32 + 16} cls="sm" fill="#5C5C58">opposite</T>
+      <T x="690" y={66 + rows.length * 32 + 16} anchor="middle" cls="sm" fill="#5C5C58">unrelated</T>
       <T x="790" y={66 + rows.length * 32 + 16} anchor="end" cls="sm" fill="#5C5C58">identical</T>
       <g id="verdict2" opacity="0">
         <rect x="470" y="418" width="320" height="30" rx="15" fill={INK} />
@@ -397,9 +418,14 @@ function SdnArt({ register }) {
 
   return (
     <svg ref={ref} viewBox="0 0 800 460" role="img" aria-label="A controller installing a drop rule on a switch, after which attacker packets stop but normal packets pass">
+      <defs>
+        <marker id="sarr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="14" markerHeight="14" markerUnits="userSpaceOnUse" orient="auto"><path d="M0 1L9 5L0 9z" fill="#0A0A0A" /></marker>
+        <marker id="sarrc" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="14" markerHeight="14" markerUnits="userSpaceOnUse" orient="auto"><path d="M0 1L9 5L0 9z" fill="#F03C4A" /></marker>
+      </defs>
+
       <g fill="none" stroke={INK} strokeWidth="3">
-        <path id="h1s" d="M 120 360 L 400 225" /><path id="h3s" d="M 400 400 L 400 235" /><path id="sh2" d="M 400 225 L 680 360" />
-        <path id="sc" d="M 392 205 L 392 100" strokeDasharray="4 6" /><path id="cs" d="M 408 100 L 408 205" strokeDasharray="4 6" />
+        <path id="h1s" d="M 120 360 L 372 252" markerEnd="url(#sarr)" /><path id="h3s" d="M 400 400 L 400 254" markerEnd="url(#sarr)" /><path id="sh2" d="M 428 252 L 680 342" markerEnd="url(#sarr)" />
+        <path id="sc" d="M 384 200 L 384 104" strokeDasharray="4 6" markerEnd="url(#sarr)" /><path id="cs" d="M 416 104 L 416 198" strokeDasharray="4 6" markerEnd="url(#sarr)" />
       </g>
       <g id="ctl"><rect x="320" y="30" width="160" height="70" rx="16" fill={INK} /><T x="400" y="62" anchor="middle" cls="lg" fill={PAPER}>Controller</T><T x="400" y="82" anchor="middle" cls="sm" fill={GREY}>os-ken · OpenFlow 1.3</T></g>
       <rect x="330" y="200" width="140" height="50" rx="14" fill={INK} /><T x="400" y="232" anchor="middle" cls="lg" fill={PAPER}>Switch</T>
@@ -409,7 +435,9 @@ function SdnArt({ register }) {
       <rect x="530" y="30" width="250" height="130" rx="16" fill="#fff" stroke={INK} strokeWidth="2.5" />
       <T x="544" y="56" cls="lg">Switch flow table</T>
       <g id="row1" opacity="0"><rect x="540" y="70" width="230" height="74" rx="8" fill={INK} /><T x="548" y="92" cls="sm" fill={PAPER}>priority=100,ip,</T><T x="548" y="110" cls="sm" fill={PAPER}>nw_src=10.0.0.1</T><T x="548" y="128" cls="sm" fill={CORAL}>actions=drop</T></g>
-      <g id="blocked" opacity="0"><rect x="30" y="268" width="250" height="36" rx="18" fill={INK} /><T x="155" y="292" anchor="middle" cls="lg" fill={PAPER}>Dropped at the switch</T></g>
+      <T x="376" y="156" anchor="end" cls="sm" fill="#5C5C58">alert</T>
+      <T x="424" y="156" cls="sm" fill="#5C5C58">flow rule</T>
+      <g id="blocked" opacity="0"><rect x="16" y="262" width="216" height="36" rx="18" fill={INK} /><T x="124" y="286" anchor="middle" cls="lg" fill={PAPER}>Dropped at the switch</T></g>
       <g id="layer" style={{ pointerEvents: 'none' }} />
     </svg>
   );
@@ -436,20 +464,26 @@ function LabArt({ register }) {
 
   return (
     <svg ref={ref} viewBox="0 0 800 460" role="img" aria-label="The replay chain from recorded capture to drop rule">
+      <defs>
+        <marker id="sarr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="14" markerHeight="14" markerUnits="userSpaceOnUse" orient="auto"><path d="M0 1L9 5L0 9z" fill="#0A0A0A" /></marker>
+        <marker id="sarrc" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="14" markerHeight="14" markerUnits="userSpaceOnUse" orient="auto"><path d="M0 1L9 5L0 9z" fill="#F03C4A" /></marker>
+      </defs>
+
       {STAGES.map((s, i) => {
         const x = 12 + i * 112;
         return (
           <g key={s} id={`st${i}`} opacity={i === 0 ? 1 : 0.55}>
-            <rect x={x} y="150" width="96" height="86" rx="16" fill={i === 4 ? CORAL : INK} />
-            <foreignObject x={x + 4} y="156" width="88" height="74"><div xmlns="http://www.w3.org/1999/xhtml" style={{ color: i === 4 ? INK : PAPER, font: '700 13px var(--display)', textAlign: 'center', display: 'grid', placeItems: 'center', height: 74, lineHeight: 1.15 }}>{s}</div></foreignObject>
-            {i < STAGES.length - 1 && <path id={`ln${i}`} d={`M ${x + 96} 193 L ${x + 112} 193`} stroke={INK} strokeWidth="3" fill="none" />}
+            <rect x={x} y="150" width="92" height="86" rx="16" fill={i === 4 ? CORAL : INK} />
+            <foreignObject x={x + 4} y="156" width="84" height="74"><div xmlns="http://www.w3.org/1999/xhtml" style={{ color: i === 4 ? INK : PAPER, font: '700 13px var(--display)', textAlign: 'center', display: 'grid', placeItems: 'center', height: 74, lineHeight: 1.15 }}>{s}</div></foreignObject>
+            {i < STAGES.length - 1 && <path id={`ln${i}`} d={`M ${x + 94} 193 L ${x + 110} 193`} stroke={INK} strokeWidth="3" fill="none" markerEnd="url(#sarr)" />}
           </g>
         );
       })}
       <T x="40" y="300" cls="lg">Packets replayed (largest capture, DDoS UDP)</T>
       <text id="cnt" x="40" y="352" className="svg-text lg" style={{ fontSize: 48 }}>0</text>
-      <T x="40" y="378" cls="sm" fill="#5C5C58">of 3,215,732 packets; the real replay took 268 s (animation is compressed)</T>
-      <g id="done" opacity="0"><rect x="40" y="396" width="420" height="40" rx="20" fill={INK} /><T x="250" y="422" anchor="middle" cls="lg" fill={PAPER}>Verdict: block · rule read back</T></g>
+      <T x="40" y="374" cls="sm" fill="#5C5C58">of 3,215,732 packets. The real replay took 268 s;</T>
+      <T x="40" y="388" cls="sm" fill="#5C5C58">this animation is compressed.</T>
+      <g id="done" opacity="0"><rect x="40" y="402" width="420" height="40" rx="20" fill={INK} /><T x="250" y="428" anchor="middle" cls="lg" fill={PAPER}>Verdict: block · rule read back</T></g>
       <rect x="500" y="290" width="270" height="146" rx="16" fill="#fff" stroke={INK} strokeWidth="2.5" />
       <T x="514" y="316" cls="lg">One capture is damaged</T>
       <T x="514" y="340" cls="sm">Vulnerability scanner: a record</T>
