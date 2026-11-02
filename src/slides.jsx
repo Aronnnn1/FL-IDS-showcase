@@ -276,7 +276,7 @@ export const SLIDES = [
         <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
           <h2>An attack nobody labelled is caught 90% to 94% of the time.</h2>
           <p className="lede">Each attack type was held out of training in turn, then every one of its rows was scored. The two stages together beat either alone.</p>
-          <div className="stats">
+          <div className="stats compact">
             <Stat value={range(ZERO_DAY_MEAN.cascade, 3).replace(' to ', '–')} label="cascade, mean over 14 types, by seed" tag={TAGS.real3} />
             <Stat value={range(ZERO_DAY_MEAN.clf, 2).replace(' to ', '–')} label="classifier alone" tag={TAGS.real3} />
             <Stat value={range(ZERO_DAY_MEAN.ae, 2).replace(' to ', '–')} label="autoencoder alone" tag={TAGS.real3} />
@@ -286,7 +286,7 @@ export const SLIDES = [
         <GroupBars
           groups={ZERO_DAY.map((z) => ({ label: z.cls.replace('Vulnerability_scanner', 'Vuln_scanner'), values: [mean(z.clf), mean(z.ae), mean(z.cascade)] }))}
           series={[{ name: 'classifier alone', color: 'var(--dim)' }, { name: 'autoencoder alone', color: 'var(--fg)' }, { name: 'cascade', color: 'var(--accent)' }]}
-          labelW={130} rowH={28}
+          labelW={130} rowH={24}
         />
       </div>
     ),

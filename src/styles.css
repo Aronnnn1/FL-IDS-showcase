@@ -281,3 +281,8 @@ button, a, select, summary { touch-action: manipulation; }
 .stat .v { font-size: clamp(22px, 2vw, 34px); overflow-wrap: anywhere; }
 .stat > div:last-child { min-width: 0; }
 .tag { white-space: normal; max-width: 100%; border-radius: 14px; line-height: 1.35; }
+.stats.compact { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.stats.compact .stat { padding: 12px; gap: 6px; }
+.stats.compact .stat .v { font-size: clamp(17px, 1.45vw, 24px); white-space: nowrap; overflow-wrap: normal; letter-spacing: -0.03em; }
+.stats.compact .stat .l { font-size: 12.5px; line-height: 1.35; }
+@media (max-width: 900px) { .stats.compact { grid-template-columns: 1fr; } }
