@@ -25,7 +25,7 @@ export const LINKS = {
   repo: 'https://github.com/Aronnnn1/FL-IDS',
   oldSite: 'https://aronnnn1.github.io/FL-IDS/',
   report: 'downloads/FL-IDS_Project_Report.pdf',
-  deck: 'downloads/FL-IDS_Review_Presentation.pdf',
+  deck: 'downloads/FL-IDS_PP2_Presentation.pdf',
 };
 
 export const DATASET = {
