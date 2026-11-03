@@ -153,3 +153,53 @@ export const range = (arr, d = 3) => {
   return lo === hi ? fmt(lo, d) : `${fmt(lo, d)} to ${fmt(hi, d)}`;
 };
 export const mean = (arr) => arr.reduce((a, b) => a + b, 0) / arr.length;
+
+// Class split of the whole usable dataset (1,985,768 unique rows), counted from the cached feature matrix.
+export const CLASS_SPLIT = [
+  { cls: 'Normal', rows: 1436597 },
+  { cls: 'DDoS_UDP', rows: 121567 },
+  { cls: 'DDoS_ICMP', rows: 68758 },
+  { cls: 'SQL_injection', rows: 50981 },
+  { cls: 'DDoS_TCP', rows: 50062 },
+  { cls: 'Vulnerability_scanner', rows: 50044 },
+  { cls: 'Password', rows: 50033 },
+  { cls: 'DDoS_HTTP', rows: 49768 },
+  { cls: 'Uploading', rows: 37243 },
+  { cls: 'Backdoor', rows: 24167 },
+  { cls: 'Port_Scanning', rows: 20213 },
+  { cls: 'XSS', rows: 15172 },
+  { cls: 'Ransomware', rows: 9885 },
+  { cls: 'Fingerprinting', rows: 872 },
+  { cls: 'MITM', rows: 406 },
+];
+// The standalone classifier on all rows, split by connection (seed 42).
+export const STANDALONE = { train: 1429825, val: 158870, test: 397073, trainSeconds: 24.2, iterations: 54, accuracy: 0.9972, macroF1: 0.9828 };
+
+// How long each real run took, by stage (seconds). Source: journey.json in each saved bundle.
+export const JOURNEY_STAGES = ['Load and encode', 'Bootstrap classifier and split', 'Federated training (20 rounds)', 'Set thresholds', 'Evaluate', 'Save'];
+export const JOURNEY = [
+  { run: '10 clients · seed 42', total: 1843.6, s: [1.0, 16.6, 1632.8, 0.2, 191.4, 0.2] },
+  { run: '10 clients · seed 43', total: 1397.2, s: [1.0, 16.7, 1220.9, 0.2, 157.4, 0.2] },
+  { run: '10 clients · seed 44', total: 1753.6, s: [1.0, 16.3, 1578.8, 0.2, 156.3, 0.2] },
+  { run: '20 clients · seed 42', total: 1260.3, s: [1.1, 16.5, 1072.6, 0.1, 168.3, 0.8] },
+  { run: '20 clients · seed 43', total: 1063.4, s: [1.0, 16.5, 871.5, 0.1, 173.1, 0.2] },
+  { run: '20 clients · seed 44', total: 1225.0, s: [1.0, 16.2, 1033.7, 0.1, 172.7, 0.2] },
+];
+
+// Time to decide on a packet, model inference only, one CPU thread, saved 10-client seed-42 bundle,
+// 3,000 single-packet calls and one 200,000-packet batch of held-out test rows (tools/latency_benchmark.py).
+export const LATENCY = {
+  cpu: 'Intel Xeon (VM), 1 thread',
+  single: {
+    classifier: { median: 0.372, p95: 0.440, p99: 0.497 },
+    autoencoder: { median: 0.060, p95: 0.094, p99: 0.660 },
+    cascade: { median: 0.642, p95: 0.706, p99: 0.819 },
+  },
+  batch: {
+    classifier: { us: 264.2, perSec: 3784 },
+    autoencoder: { us: 5.5, perSec: 181382 },
+    cascade: { us: 265.9, perSec: 3760 },
+  },
+  // Whole-capture replay in the live demo: wall time / packets, derived from the Phase B table.
+  endToEndUs: { 'DDoS UDP': 83, 'DDoS ICMP': 80, 'DDoS TCP': 104 },
+};

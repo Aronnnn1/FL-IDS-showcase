@@ -1,7 +1,8 @@
 import NetworkMap from './NetworkMap.jsx';
-import { Tag, Stat, Marquee, DataTable, BarCell, GroupBars, SeedLines, PairColumns } from './ui.jsx';
+import { Tag, Stat, Marquee, DataTable, BarCell, GroupBars, SeedLines, PairColumns, LogBars, StageBars } from './ui.jsx';
 import {
   TAGS, TEAM, TITLE, LINKS, DATASET, RUNS, PER_CLASS, SWEEP, ABLATION, ZERO_DAY, ZERO_DAY_MEAN, STEALTH, PRUNING, CLIP, PHASE_B,
+  CLASS_SPLIT, STANDALONE, JOURNEY, JOURNEY_STAGES, LATENCY,
   fmt, pct, int, range, mean,
 } from './data.js';
 
@@ -101,23 +102,21 @@ export const SLIDES = [
     tone: 'ink',
     label: 'Data',
     render: () => (
-      <div className="split">
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
+      <div className="split even">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
           <h2>All 1.99 million usable rows, split by connection.</h2>
           <p className="lede">Packets of one connection share most of their features, so putting some in training and some in testing would flatter the score. Here a connection stays whole: in one site, and in one of that site’s train, validation or test slices.</p>
-          <div className="stats">
-            <Stat value={int(DATASET.rawRows)} label="rows in Edge-IIoTset" tag="dataset" />
-            <Stat value={int(DATASET.usableRows)} label="unique rows used" tag={TAGS.cfg} accent />
-          </div>
-        </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-          <div className="stats">
-            <Stat value={DATASET.features} label="features per packet" tag={TAGS.cfg} />
-            <Stat value={DATASET.classes} label="classes (1 normal, 14 attacks)" tag={TAGS.cfg} />
+          <div className="stats compact">
+            <Stat value={int(DATASET.usableRows)} label="unique rows used (of 2,219,201)" tag={TAGS.cfg} accent />
+            <Stat value={`${DATASET.features} · ${DATASET.classes}`} label="features · classes" tag={TAGS.cfg} />
             <Stat value={int(DATASET.flows)} label="connections" tag={TAGS.cfg} />
           </div>
-          <div className="callout"><p>5% of rows ({range(DATASET.calibration.map((v) => v / 1000), 1).replace(/ to /, ' to ')} thousand, by seed) stay on the server with labels to start the classifier. The other ~1.89 million rows are shared among 10 or 20 sites.</p></div>
-          <p className="note">MITM is one single connection (406 rows). It cannot be split, so it goes wholly to the server’s calibration set and is scored only by the unseen-attack test and the live replay.</p>
+          <div className="callout"><p>5% of rows (about 72 to 80 thousand, by seed) stay on the server with labels to start the classifier. The other ~1.89 million rows are shared among 10 or 20 sites.</p></div>
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <h3>Class split of the data the system trains on</h3>
+          <LogBars items={CLASS_SPLIT.map((c) => ({ label: c.cls.replace('Vulnerability_scanner', 'Vuln_scanner'), value: c.rows }))} width={620} rowH={19} labelW={118} />
+          <Tag>{TAGS.cfg}</Tag>
         </div>
       </div>
     ),
@@ -130,6 +129,7 @@ export const SLIDES = [
           caption={`Test slices per run: ${DATASET.testRows} rows. 24 connections (655 rows) carry two labels and are split per label.`}
         />
         <Tag>{TAGS.real3}</Tag>
+        <p>Normal traffic is 72% of the rows (1,436,597); the 14 attack types share the other 549,171. MITM has 406 rows and one connection; Fingerprinting 872. The standalone classifier trained on all rows used {int(STANDALONE.train)} rows for training, {int(STANDALONE.val)} for early stopping and {int(STANDALONE.test)} for testing, split by connection.</p>
         <p>Packets are grouped into connections in capture order, with a new connection after 60 s idle or 120 s active. The 130 features are the original 91 plus the service port, 18 content features and 20 connection features. IP addresses, timestamps, ephemeral ports and row order are never used as features.</p>
       </>
     ),
@@ -401,7 +401,69 @@ export const SLIDES = [
     ),
   },
 
-  /* 11 ----------------------------------------------------------- limits */
+  /* 10b ---------------------------------------------------------- speed */
+  {
+    id: 'speed',
+    tone: 'coral',
+    label: 'Speed',
+    render: () => (
+      <div className="split even">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+          <h2>Training takes minutes. Deciding on a packet takes under a millisecond.</h2>
+          <p className="lede">The first classifier, including the data split, is ready in 17 seconds. The 20 federated rounds take 15 to 27 minutes, and a whole run with evaluation 18 to 31.</p>
+          <StageBars runs={JOURNEY} stages={JOURNEY_STAGES} width={620} labelW={118} />
+          <Tag>measured · full pool · 3 seeds · some runs overlapped other jobs</Tag>
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+          <h3>Time to decide on one packet</h3>
+          <div className="stats compact">
+            <Stat value={`${fmt(LATENCY.single.cascade.median, 2)} ms`} label="both stages, one packet, median" tag="measured · 1 CPU thread" accent />
+            <Stat value={`${fmt(LATENCY.single.classifier.median, 2)} ms`} label="classifier stage alone" tag="measured · 1 CPU thread" />
+            <Stat value={`${fmt(LATENCY.single.autoencoder.median, 2)} ms`} label="autoencoder stage alone" tag="measured · 1 CPU thread" />
+          </div>
+          <GroupBars
+            groups={[
+              { label: 'Classifier', values: [LATENCY.single.classifier.p99] },
+              { label: 'Autoencoder', values: [LATENCY.single.autoencoder.p99] },
+              { label: 'Both stages', values: [LATENCY.single.cascade.p99] },
+            ]}
+            series={[{ name: '99th percentile (ms)', color: 'var(--accent)' }]} max={1} labelW={110} rowH={26} fmtv={(v) => `${fmt(v, 2)} ms`}
+          />
+          <p className="note">99 of 100 packets were decided within the length of the bar. Model time only: it leaves out reading the capture, extracting features with tshark and the switch. In a batch, one CPU thread decides about 3,800 packets a second.</p>
+          <div className="callout"><p>The live demo is not inline. It extracts features from the whole recording first, then decides. Averaged over a whole replay, the DDoS UDP recording took 83 microseconds a packet from start to finish, but no single packet was blocked in real time.</p></div>
+        </div>
+      </div>
+    ),
+    detail: () => (
+      <>
+        <h3>How these times were measured</h3>
+        <DataTable
+          columns={[
+            { key: 'm', label: 'Stage' },
+            { key: 'a', label: 'One packet, median (ms)', num: true },
+            { key: 'b', label: '95th (ms)', num: true },
+            { key: 'c', label: '99th (ms)', num: true },
+            { key: 'd', label: 'Batch (packets/s)', num: true },
+          ]}
+          rows={[['Classifier', 'classifier'], ['Autoencoder', 'autoencoder'], ['Both stages', 'cascade']].map(([m, k]) => ({
+            m, a: fmt(LATENCY.single[k].median, 3), b: fmt(LATENCY.single[k].p95, 3), c: fmt(LATENCY.single[k].p99, 3), d: int(LATENCY.batch[k].perSec),
+          }))}
+        />
+        <p className="note">Saved 10-client seed-42 model, 3,000 held-out packets timed one call each, then one batch of 200,000 packets, on one thread of the VM’s Intel Xeon. The classifier dominates the cost; the autoencoder adds about 0.06 ms.</p>
+        <h3 style={{ marginTop: 18 }}>Time by stage of each run (seconds)</h3>
+        <DataTable
+          columns={[{ key: 'run', label: 'Run' }, ...JOURNEY_STAGES.map((st, k) => ({ key: `s${k}`, label: st, num: true })), { key: 't', label: 'Total', num: true }]}
+          rows={JOURNEY.map((r) => ({ run: r.run, ...Object.fromEntries(r.s.map((v, k) => [`s${k}`, v])), t: r.total }))}
+        />
+        <p className="note">The standalone classifier on all rows (split by connection) trained in {STANDALONE.trainSeconds} seconds, stopping at tree {STANDALONE.iterations}: {pct(STANDALONE.accuracy, 2)} accuracy, macro F1 {fmt(STANDALONE.macroF1, 3)}. In the live demo the whole-capture average is 83 µs a packet for DDoS UDP (268 s for 3,215,732 packets), 80 µs for DDoS ICMP and 104 µs for DDoS TCP, derived from the wall times in the replay table.</p>
+        <Tag>{TAGS.real3}</Tag>
+      </>
+    ),
+  },
+
+  // Limitations slide hidden for now. The same text stays on the Results page.
+  // To bring it back, delete the opening and closing comment markers around it; slides renumber on their own.
+  /*
   {
     id: 'limits',
     tone: 'ink',
@@ -435,8 +497,9 @@ export const SLIDES = [
       </>
     ),
   },
+  */
 
-  /* 12 ----------------------------------------------------------- end */
+  /* end ----------------------------------------------------------- end */
   {
     id: 'end',
     tone: 'coral',

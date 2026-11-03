@@ -1,6 +1,7 @@
-import { DataTable, BarCell, GroupBars, SeedLines, PairColumns, Tag, Stat } from './ui.jsx';
+import { DataTable, BarCell, GroupBars, SeedLines, PairColumns, Tag, Stat, LogBars, StageBars } from './ui.jsx';
 import {
   TAGS, DATASET, RUNS, PER_CLASS, SWEEP, ABLATION, ZERO_DAY, ZERO_DAY_MEAN, STEALTH, PRUNING, CLIP, PHASE_B, LINKS,
+  CLASS_SPLIT, STANDALONE, JOURNEY, JOURNEY_STAGES, LATENCY,
   fmt, pct, int, mean,
 } from './data.js';
 
@@ -9,6 +10,7 @@ const seeds3 = (arr, d = 3) => (arr ? arr.map((v) => fmt(v, d)).join(' / ') : 'n
 const SECTIONS = [
   ['data', 'Data and splits'],
   ['runs', 'Real runs'],
+  ['speed', 'Speed'],
   ['perclass', 'Per attack type'],
   ['alarms', 'False alarms'],
   ['poison', 'Poisoning'],
@@ -74,6 +76,38 @@ export default function Results() {
               { key: 'a', label: 'Phase A (s)', num: true, render: (r) => int(r.phaseA) },
             ]}
             rows={RUNS}
+          />
+        </Panel>
+
+        <Panel id="speed" title="Training time and time to decide on a packet" tag={TAGS.real3}>
+          <div className="two">
+            <div>
+              <h3 style={{ marginBottom: 8 }}>Class split of the training data</h3>
+              <LogBars items={CLASS_SPLIT.map((c) => ({ label: c.cls.replace('Vulnerability_scanner', 'Vuln_scanner'), value: c.rows }))} width={620} rowH={19} labelW={118} />
+            </div>
+            <div>
+              <h3 style={{ marginBottom: 8 }}>Time of each stage of each run</h3>
+              <StageBars runs={JOURNEY} stages={JOURNEY_STAGES} width={620} labelW={118} />
+            </div>
+          </div>
+          <DataTable
+            columns={[{ key: 'run', label: 'Run' }, ...JOURNEY_STAGES.map((st, k) => ({ key: `s${k}`, label: st, num: true })), { key: 't', label: 'Total (s)', num: true }]}
+            rows={JOURNEY.map((rr) => ({ run: rr.run, ...Object.fromEntries(rr.s.map((v, k) => [`s${k}`, v])), t: rr.total }))}
+            caption={`The standalone classifier on all rows, split by connection, trained in ${STANDALONE.trainSeconds} s (${int(STANDALONE.train)} training rows, ${int(STANDALONE.val)} for early stopping, ${int(STANDALONE.test)} for testing). Some runs overlapped other jobs on the VM, so these times are upper bounds.`}
+          />
+          <h3>Time to decide on one packet</h3>
+          <DataTable
+            columns={[
+              { key: 'm', label: 'Stage' },
+              { key: 'a', label: 'One packet, median (ms)', num: true },
+              { key: 'b', label: '95th (ms)', num: true },
+              { key: 'c', label: '99th (ms)', num: true },
+              { key: 'd', label: 'Batch of 200,000 (packets/s)', num: true },
+            ]}
+            rows={[['Classifier', 'classifier'], ['Autoencoder', 'autoencoder'], ['Both stages', 'cascade']].map(([m, k]) => ({
+              m, a: fmt(LATENCY.single[k].median, 3), b: fmt(LATENCY.single[k].p95, 3), c: fmt(LATENCY.single[k].p99, 3), d: int(LATENCY.batch[k].perSec),
+            }))}
+            caption="Measured on the saved 10-client seed-42 model with 3,000 held-out packets timed one call each, on one CPU thread of the VM (tools/latency_benchmark.py). Model time only: it excludes reading the capture, tshark feature extraction and the switch. The live demo classifies a whole capture after extracting its features, so it does not block packets inline; averaged over a whole replay it took 83 µs a packet for DDoS UDP, 80 for DDoS ICMP and 104 for DDoS TCP (wall time divided by packets)."
           />
         </Panel>
 

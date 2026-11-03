@@ -1,4 +1,4 @@
-import { fmt, SEEDS } from './data.js';
+import { fmt, int, SEEDS } from './data.js';
 
 export const Tag = ({ children }) => <span className="tag">{children}</span>;
 
@@ -167,3 +167,65 @@ export const Icon = {
   info: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round"><circle cx="12" cy="12" r="9" /><path d="M12 11v6M12 7.5v.1" /></svg>,
   reset: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round"><path d="M4 12a8 8 0 1 0 3-6.2M4 4v5h5" /></svg>,
 };
+
+// Horizontal bars on a log scale (counts that span four orders of magnitude). items: [{label, value}]
+export function LogBars({ items, width = 640, rowH = 22, labelW = 150 }) {
+  const gap = 5;
+  const total = items.reduce((a, b) => a + b.value, 0);
+  const maxLog = Math.log10(Math.max(...items.map((i) => i.value)));
+  const plot = width - labelW - 150;
+  const h = items.length * (rowH + gap);
+  return (
+    <div>
+      <svg className="chart" viewBox={`0 0 ${width} ${h + 4}`} role="img" aria-label="Rows per class on a log scale">
+        {items.map((it, i) => {
+          const y = i * (rowH + gap);
+          const w = Math.max(3, (Math.log10(it.value) / maxLog) * plot);
+          return (
+            <g key={it.label} transform={`translate(0 ${y})`}>
+              <text className="lbl" x={labelW - 10} y={rowH / 2 + 4} textAnchor="end">{it.label}</text>
+              <rect x={labelW} y="0" width={plot} height={rowH - 2} rx="3" fill="var(--line)" opacity="0.5" />
+              <rect x={labelW} y="0" width={w} height={rowH - 2} rx="3" fill={it.label === 'Normal' ? 'var(--fg)' : 'var(--accent)'} />
+              <text x={labelW + plot + 8} y={rowH / 2 + 4}>{int(it.value)}</text>
+              <text x={width} y={rowH / 2 + 4} textAnchor="end">{((it.value / total) * 100).toFixed(it.value / total < 0.01 ? 2 : 1)}%</text>
+            </g>
+          );
+        })}
+      </svg>
+      <p className="note" style={{ marginTop: 4 }}>Bar length is on a log scale so small classes stay visible; the counts and shares are exact.</p>
+    </div>
+  );
+}
+
+// One stacked bar per run, stages in order. runs: [{run, total, s:[...]}], stages: [name...]
+export function StageBars({ runs, stages, width = 640, labelW = 140 }) {
+  const rowH = 24;
+  const gap = 12;
+  const maxTotal = Math.max(...runs.map((r) => r.total));
+  const plot = width - labelW - 70;
+  const cols = ['var(--dim)', 'var(--fg)', 'var(--accent)', 'var(--line)', 'var(--dim)', 'var(--line)'];
+  return (
+    <div>
+      <svg className="chart" viewBox={`0 0 ${width} ${runs.length * (rowH + gap)}`} role="img" aria-label="Time of each stage of each run">
+        {runs.map((r, i) => {
+          let x = labelW;
+          return (
+            <g key={r.run} transform={`translate(0 ${i * (rowH + gap)})`}>
+              <text className="lbl" x={labelW - 10} y={rowH / 2 + 4} textAnchor="end">{r.run.replace(' clients · seed ', ' cl. · s')}</text>
+              {r.s.map((v, k) => {
+                const w = (v / maxTotal) * plot;
+                const rect = <rect key={k} x={x} y="0" width={Math.max(w, v > 0 ? 1 : 0)} height={rowH} fill={cols[k]} stroke="var(--bg)" strokeWidth="1" />;
+                x += w;
+                return rect;
+              })}
+              <text x={x + 8} y={rowH / 2 + 4}>{Math.round(r.total / 60 * 10) / 10} min</text>
+            </g>
+          );
+        })}
+      </svg>
+      <div className="legend">
+        {stages.map((s, k) => <span key={s}><i style={{ background: cols[k] }} />{s}</span>)}
+      </div>
+    </div>
+  );
+}
