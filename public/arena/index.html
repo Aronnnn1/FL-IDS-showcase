@@ -3,15 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>FL-IDS Arena: simulator</title>
-<link rel="stylesheet" href="style.css?v=4">
+<title>FL-IDS Arena</title>
+<link rel="stylesheet" href="style.css?v=5">
 </head>
 <body>
 <header>
-  <div class="brand">
-    <div class="logo">FL</div>
-    <div><h1>FL-IDS Arena <span style="font-weight:400;color:#5b6b85">(simulator)</span></h1><p>Interactive simulator over real verdicts from the live arena (Mininet, Open vSwitch, SDN controller)</p></div>
-  </div>
+  <div class="brand"><span class="logo">FL-IDS<b>.</b></span><h1>Arena simulator</h1></div>
   <div class="actions">
     <span id="mode" class="pill live">SIMULATOR</span>
     <span id="boot" class="pill">Network off</span>
@@ -22,7 +19,7 @@
       <option value="all14">All 14 attack types (rest normal)</option>
       <option value="normal">All hosts normal (false-alarm check)</option>
     </select>
-    <button id="btn-launch" class="btn go" disabled>▶ Play</button>
+    <button id="btn-launch" class="btn go" disabled>Play</button>
     <button id="btn-reset" class="btn" disabled>+ New run</button>
     <select id="rec" class="btn" title="Replay a saved run"><option value="">Replay a saved run…</option></select>
   </div>
@@ -64,6 +61,6 @@
   </aside>
 </main>
 <script>window.ARENA_STATIC = true;</script>
-<script src="app.js?v=4"></script>
+<script src="app.js?v=5"></script>
 </body>
 </html>
