@@ -511,6 +511,7 @@ export const SLIDES = [
           <a className="pill solid" href={LINKS.report} target="_blank" rel="noreferrer">Project report (PDF)</a>
           <a className="pill solid" href={LINKS.deck} target="_blank" rel="noreferrer">Presentation (PDF)</a>
           <a className="pill solid" href="downloads/FL-IDS_PP2_Presentation.pptx" target="_blank" rel="noreferrer">Presentation (PPTX)</a>
+          <a className="pill solid" href="arena/" target="_blank" rel="noreferrer">Live arena (recorded runs)</a>
           <a className="pill" href="#/results">All results</a>
           <a className="pill" href={LINKS.repo} target="_blank" rel="noreferrer">GitHub repository</a>
           <a className="pill" href={LINKS.oldSite} target="_blank" rel="noreferrer">Original results site</a>
