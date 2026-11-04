@@ -3,24 +3,24 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>FL-IDS Arena: recorded runs</title>
+<title>FL-IDS Arena: simulator</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <header>
   <div class="brand">
     <div class="logo">FL</div>
-    <div><h1>FL-IDS Arena <span style="font-weight:400;color:#5b6b85">(recorded runs)</span></h1><p>Recorded runs of the live demo: real Mininet network, real attack captures, real switch rules</p></div>
+    <div><h1>FL-IDS Arena <span style="font-weight:400;color:#5b6b85">(simulator)</span></h1><p>Interactive simulator over real verdicts from the live arena (Mininet, Open vSwitch, SDN controller)</p></div>
   </div>
   <div class="actions">
-    <span id="mode" class="pill replay">RECORDED RUN</span>
+    <span id="mode" class="pill live">SIMULATOR</span>
     <span id="boot" class="pill">Network off</span>
     <button id="btn-boot" class="btn primary">Start network</button>
     <select id="preset" class="btn" title="Fill the hosts with a ready-made scenario">
       <option value="">Scenario…</option>
-      <option value="mixed">Mixed network (10 attacks, 5 normal)</option>
-      <option value="all14">All 14 attack types + 1 normal</option>
-      <option value="normal">All 15 hosts normal (false-alarm check)</option>
+      <option value="mixed">Mixed network (attackers and normal hosts)</option>
+      <option value="all14">All 14 attack types (rest normal)</option>
+      <option value="normal">All hosts normal (false-alarm check)</option>
     </select>
     <button id="btn-launch" class="btn go" disabled>Launch all</button>
     <button id="btn-reset" class="btn" disabled>Reset</button>
@@ -30,7 +30,12 @@
 
 <main>
   <section class="map-wrap">
-    <div id="narr" class="narr">This page replays runs recorded on the live arena (Mininet, Open vSwitch and the SDN controller running in the project VM). Choose a run at the top right and click any host.</div>
+    <div id="narr" class="narr">Simulator: give hosts roles (click a host or use Scenario), then Launch.</div>
+    <div class="toolbar">
+      <span class="tgroup"><button id="btn-addnet" class="btn sm">+ Network</button><button id="btn-rmnet" class="btn sm">− Network</button></span>
+      <span class="tgroup" id="speedbar"><b>Speed</b><button data-s="0.25">0.25×</button><button data-s="0.5">0.5×</button><button data-s="1" class="active">1×</button><button data-s="2">2×</button><button data-s="4">4×</button></span>
+      <span id="speedinfo" class="sub"></span>
+    </div>
     <svg id="map" viewBox="0 0 1180 610" preserveAspectRatio="xMidYMid meet"></svg>
     <div class="legend">
       <span><i class="dot idle"></i>Idle</span>
