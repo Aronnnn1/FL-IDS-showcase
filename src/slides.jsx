@@ -516,7 +516,7 @@ export const SLIDES = [
           <a className="pill" href={LINKS.repo} target="_blank" rel="noreferrer">GitHub repository</a>
           <a className="pill" href={LINKS.oldSite} target="_blank" rel="noreferrer">Original results site</a>
         </div>
-        <Marquee items={['Aaryan Prakash', 'Aaron B Ajay', 'Amal Roy', 'Amogh Krishna J S']} />
+        <Marquee items={['Aaron B Ajay', 'Aaryan Prakash', 'Amal Roy', 'Amogh Krishna J S']} />
         <p className="lede">Department of Computer Science &amp; Engineering, BMS College of Engineering.</p>
       </>
     ),

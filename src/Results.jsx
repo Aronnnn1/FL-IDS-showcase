@@ -245,7 +245,7 @@ export default function Results() {
         </Panel>
 
         <div className="footer">
-          <p style={{ margin: '0 auto' }}>Aaryan Prakash · Aaron B Ajay · Amal Roy · Amogh Krishna J S · BMS College of Engineering</p>
+          <p style={{ margin: '0 auto' }}>Aaron B Ajay · Aaryan Prakash · Amal Roy · Amogh Krishna J S · BMS College of Engineering</p>
         </div>
       </div>
     </main>

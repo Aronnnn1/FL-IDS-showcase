@@ -13,8 +13,8 @@ export const TAGS = {
 };
 
 export const TEAM = [
-  'Aaryan Prakash',
   'Aaron B Ajay',
+  'Aaryan Prakash',
   'Amal Roy',
   'Amogh Krishna J S',
 ];

@@ -1,7 +1,7 @@
 # FL-IDS Showcase
 
 An interactive walkthrough of **Federated Learning-based Intrusion Detection System for SDN-enabled IoT Networks**
-(Aaryan Prakash, Aaron B Ajay, Amal Roy, Amogh Krishna J S; Department of Computer Science & Engineering, BMS College of Engineering).
+(Aaron B Ajay, Aaryan Prakash, Amal Roy, Amogh Krishna J S; Department of Computer Science & Engineering, BMS College of Engineering).
 
 Live site: https://aronnnn1.github.io/FL-IDS-showcase/
 Project code and run logs: https://github.com/Aronnnn1/FL-IDS

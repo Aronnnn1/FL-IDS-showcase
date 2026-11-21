@@ -41,6 +41,7 @@ function Nav({ page }) {
       <a className="logo" href="#/" aria-label="FL-IDS home">FL-IDS<b>.</b></a>
       <a className={`nav-link${page === 'deck' ? ' on' : ''}`} href="#/">Present</a>
       <a className={`nav-link${page === 'results' ? ' on' : ''}`} href="#/results">Results</a>
+      <a className="nav-link" href="arena/" target="_blank" rel="noreferrer">Arena</a>
       <a className="nav-link hide-s" href={LINKS.report} target="_blank" rel="noreferrer">Report</a>
       <a className="nav-link hide-s" href={LINKS.repo} target="_blank" rel="noreferrer">GitHub</a>
     </nav>
